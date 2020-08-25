@@ -1,0 +1,55 @@
+---
+title: "Daily Assignment 13"
+author: "Hope Wilcox"
+date: "8/25/2020"
+output: html_document
+---
+
+
+```{r}
+library(tidyverse)
+library(sf)
+library(units)
+library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(rmapshaper)
+```
+
+```{r, results='hide'}
+USAboundaries::us_states(resolution = "low")
+```
+
+
+```{r}
+conus = USAboundaries::us_states() %>%
+  filter(!state_name %in% c("Puerto Rico",
+                            "Alaska",
+                            "Hawaii"))
+```
+
+```{r}
+usa = conus %>% 
+  filter(!stusps %in% c("AK", "HI", "PR")) %>% 
+  st_union() %>% 
+  st_transform(5070)
+usa1   = st_simplify(usa, dTolerance = 0)
+usa100  = st_simplify(usa, dTolerance = 100000)
+usa5000 = st_simplify(usa, dTolerance = 50000)
+```
+
+```{r}
+mapview::npts(usa1)
+mapview::npts(usa5000)
+mapview::npts(usa100)
+
+```
+
+
+
+```{r}
+plot(usa1)
+plot(usa100)
+plot(usa5000)
+```
+
